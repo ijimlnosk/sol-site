@@ -2,10 +2,11 @@ import axios from "axios";
 import { getSessionToken } from "../auth/storage-manager";
 
 export const axiosInstance = axios.create({
-    baseURL: "https://server.soljk.com:3055",
+    baseURL: "https://server.soljk.com",
     headers: {
         "Content-Type": "application/json",
     },
+    withCredentials: true,
 });
 
 // 모든 요청을 시작하기 전에 실행됨

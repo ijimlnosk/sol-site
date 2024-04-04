@@ -22,7 +22,9 @@ const Wrapper = styled.div`
     align-items: center;
     grid-template-columns: repeat(3, 1fr);
     position: fixed;
+    top: 0;
     border: 1px solid ${colors.GRAY.mediumDarkGray};
+    background-color: ${colors.WHITE.cream};
 `;
 
 const LogoBox = styled.div`

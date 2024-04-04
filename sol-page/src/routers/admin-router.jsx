@@ -10,7 +10,8 @@ const AdminRoute = () => {
 
     useEffect(() => {
         if (!sessionToken) {
-            navigate("/signin");
+            // navigate("/signin");
+            navigate("");
         }
         if (sessionToken) {
             navigate("");
