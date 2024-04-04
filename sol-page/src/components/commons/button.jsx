@@ -1,6 +1,14 @@
 import { SButton } from "../../style/button.style";
 
-const Button = ({ theme, size, disabled, $isActive, onClick, children }) => {
+const Button = ({
+    theme,
+    size,
+    disabled,
+    $isActive,
+    onClick,
+    type,
+    children,
+}) => {
     const disabledTheme = "firstTheme";
 
     const buttonTheme = disabled ? disabledTheme : theme;
@@ -12,6 +20,7 @@ const Button = ({ theme, size, disabled, $isActive, onClick, children }) => {
             onClick={onClick}
             disabled={disabled}
             isActive={$isActive}
+            type={type}
         >
             {children}
         </SButton>

@@ -22,7 +22,13 @@ const Header = () => {
     return (
         <Wrapper>
             <LogoBox>
-                <LogoImg src="https://i.ibb.co/82V9Y1K/image.webp" />
+                <a
+                    href="https://github.com/ijimlnosk"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <LogoImg src="https://i.ibb.co/82V9Y1K/image.webp" />
+                </a>
             </LogoBox>
             <Title onClick={() => onNavi()}>Jinsol&rsquo;s Page</Title>
             <AddProject>
