@@ -4,7 +4,7 @@ import { colors } from "../constants/design-token/color";
 import { useNavigate } from "react-router-dom";
 import { BsArrowDownShort } from "react-icons/bs";
 import PageCard from "../components/commons/pageCard";
-import { getProjectAll } from "../libs/axios/projects";
+import { getProjectAll, getProjectMembers } from "../libs/axios/projects";
 import { useEffect, useState } from "react";
 
 const MainPage = () => {
@@ -14,7 +14,14 @@ const MainPage = () => {
     const fetchProject = async () => {
         try {
             const projects = await getProjectAll();
-            console.log("프로젝트 데이터: ", projects);
+            const projectWithMembers = await Promise.all(
+                projects.map(async (project) => {
+                    const members = await getProjectMembers(project.id);
+                    return { ...project, members };
+                })
+            );
+            console.log("프로젝트 데이터: ", projectWithMembers);
+            setData(projectWithMembers);
         } catch (error) {
             console.error("데이터를 가져오는데 실패했습니다. ", error);
         }
@@ -32,17 +39,17 @@ const MainPage = () => {
         <>
             <Box>
                 <Container>
-                    <PageCard
-                        title={"OMEGA BOX3"}
-                        imgSrc={
-                            "https://i.ibb.co/5ryt5n1/omegabox3-poster.webp"
-                        }
-                        members={["김진솔", "최하영", "허진욱"]}
-                        period={"2023.12.17-2023.12.25"}
-                        content={"TMDB API를 이용한 영화 소개 사이트"}
-                        url={"https://omegabox3.soljk.com"}
-                    />
-
+                    {data?.map((item) => (
+                        <PageCard
+                            key={item.id}
+                            title={item.title}
+                            imgSrc={item.imgSrc}
+                            members={item.members?.map((member) => member.name)}
+                            period={item.period}
+                            content={item.content}
+                            url={item.url}
+                        />
+                    ))}
                     <BannerBox>
                         <Wrapper onClick={() => onNavi("/mobi")}>
                             MOBI로 이동

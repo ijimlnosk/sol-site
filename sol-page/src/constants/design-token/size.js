@@ -1,6 +1,10 @@
 export const sizes = {
     button: {
-        smail: {
+        xsmall: {
+            width: "70px",
+            height: "25px",
+        },
+        small: {
             width: "100px",
             height: "50px",
         },

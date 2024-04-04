@@ -3,6 +3,7 @@ import MainPage from "../page/main";
 import SignInPage from "../page/signin";
 import AdminRoute from "./admin-router";
 import Mobi from "../page/mobi";
+import AddProject from "../page/addProject";
 
 const ADMIN_ROUTER = {
     element: <AdminRoute />,
@@ -14,6 +15,10 @@ const ADMIN_ROUTER = {
         {
             path: "/mobi",
             element: <Mobi />,
+        },
+        {
+            path: "/addProject",
+            element: <AddProject />,
         },
     ],
 };
