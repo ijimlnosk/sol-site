@@ -57,6 +57,7 @@ const Wrapper = styled.div`
     top: 0;
     border: 1px solid ${colors.GRAY.mediumDarkGray};
     background-color: ${colors.WHITE.cream};
+    z-index: 999;
 `;
 
 const LogoBox = styled.div`

@@ -54,17 +54,23 @@ const AddProject = () => {
 
             // 프로젝트 생성 성공 후 ID를 사용하여 참여자와 기술 스택 추가
             const projectId = createdProject.id;
+            console.log(projectId, "projectId");
             if (projectId) {
                 await Promise.all([
                     addProjectMembers(projectId, participants),
                     addProjectSkills(projectId, skills),
                 ]);
+                console.log(participants, "participantName");
+                console.log(skills, "skillName");
                 console.log("Members and skills added to tje project");
             }
         } catch (error) {
             console.error("프로젝트 생성 실패: ", error);
         }
     };
+
+    console.log(participants, "participantName");
+    console.log(skills, "skillName");
 
     const addParticipant = (name, state, setState, fieldName) => {
         if (name) {
@@ -188,6 +194,38 @@ const AddProject = () => {
                         type="button"
                     >
                         추가
+                    </Button>
+
+                    <Spacer width={spacing.medium} height={spacing.medium} />
+
+                    <Input
+                        theme={"creamWhite"}
+                        size={"small"}
+                        title="프로젝트 기간"
+                        type="text"
+                        register={register}
+                        registerKey="period"
+                        errors={errors}
+                    />
+                    <Spacer width={spacing.medium} height={spacing.medium} />
+
+                    <Input
+                        theme={"creamWhite"}
+                        size={"small"}
+                        title="간단한 설명을 입력 해 주세요"
+                        type="text"
+                        register={register}
+                        registerKey="content"
+                        errors={errors}
+                    />
+                    <Spacer width={spacing.medium} height={spacing.medium} />
+
+                    <Button
+                        type={"submit"}
+                        size={"medium"}
+                        theme={"firstTheme"}
+                    >
+                        저장하기
                     </Button>
                 </AppProjectBox>
             </Wrapper>

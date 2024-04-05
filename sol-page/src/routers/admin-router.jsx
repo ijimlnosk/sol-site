@@ -11,7 +11,7 @@ const AdminRoute = () => {
     useEffect(() => {
         if (!sessionToken) {
             navigate("/signin");
-            // navigate("");
+            // navigate("/");
         } else {
             if (location.pathname === "/signin") {
                 navigate("/");

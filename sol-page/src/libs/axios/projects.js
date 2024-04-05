@@ -3,7 +3,7 @@ import { axiosInstance } from "./axios-instance";
 // 프로젝트 생성
 export const createProject = async (projectData) => {
     try {
-        const response = await axiosInstance.post("/proejcts", projectData);
+        const response = await axiosInstance.post("/projects", projectData);
         return response.data;
     } catch (error) {
         console.error("프로젝트 생성 오류: ", error);
