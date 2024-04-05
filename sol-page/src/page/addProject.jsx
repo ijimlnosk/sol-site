@@ -6,8 +6,15 @@ import Button from "../components/commons/button";
 import { colors } from "../constants/design-token/color";
 import Spacer from "../components/commons/spacer";
 import spacing from "../constants/design-token/spacing";
-import { BsPlusLg } from "react-icons/bs";
 import { useState } from "react";
+import AddImage from "../components/addProject/addImage";
+
+import {
+    addProjectMembers,
+    addProjectSkills,
+    createProject,
+} from "../libs/axios/projects";
+import { useSelector } from "react-redux";
 
 const AddProject = () => {
     const {
@@ -19,27 +26,62 @@ const AddProject = () => {
     } = useForm({ mode: "onChange" });
 
     const [participants, setParticipants] = useState([]);
+    const [skills, setSkills] = useState([]);
+    const image = useSelector((state) => state.image);
 
     const participantName = watch("participantName");
+    const skillName = watch("skillName");
 
-    const addParticipant = () => {
-        if (participantName) {
-            setParticipants([...participants, participantName]);
-            setValue("participantName", "");
+    const submitProject = async (data) => {
+        try {
+            const projectData = new FormData();
+            projectData.append("title", data.title);
+            projectData.append("period", data.period);
+            projectData.append("content", data.content);
+            projectData.append("requirements", data.requirements);
+            projectData.append("url", data.url);
+
+            // 이미지가 있으면 projectData에 추가
+            if (image) {
+                projectData.append("imgSrc", image);
+            }
+
+            console.log(projectData);
+
+            // 참여자와 기술 스택은 별도의 API 호출로 처리될 수 있으므로 여기서는 무시
+            const createdProject = await createProject(projectData);
+            console.log("Created project: ", createdProject);
+
+            // 프로젝트 생성 성공 후 ID를 사용하여 참여자와 기술 스택 추가
+            const projectId = createdProject.id;
+            if (projectId) {
+                await Promise.all([
+                    addProjectMembers(projectId, participants),
+                    addProjectSkills(projectId, skills),
+                ]);
+                console.log("Members and skills added to tje project");
+            }
+        } catch (error) {
+            console.error("프로젝트 생성 실패: ", error);
         }
     };
 
-    const removeParticipant = (RemoveIndex) => {
-        setParticipants(
-            participants.filter((_, index) => index !== RemoveIndex)
-        );
+    const addParticipant = (name, state, setState, fieldName) => {
+        if (name) {
+            setState([...state, name]);
+            setValue(fieldName, "");
+        }
+    };
+
+    const removeParticipant = (RemoveIndex, state, setState) => {
+        setState(state.filter((_, index) => index !== RemoveIndex));
     };
 
     return (
         <Box>
             <Wrapper>
                 <div>프로젝트 추가 페이지</div>
-                <AppProjectBox onSubmit={handleSubmit}>
+                <AppProjectBox onSubmit={handleSubmit(submitProject)}>
                     <Spacer width={spacing.medium} height={spacing.medium} />
                     <Input
                         theme={"creamWhite"}
@@ -51,13 +93,9 @@ const AddProject = () => {
                         errors={errors}
                     />
                     <Spacer width={spacing.medium} height={spacing.medium} />
-                    <P>상품 포스터 추가하기</P>
-                    <AddImgBox>
-                        <BsPlusLg
-                            size={"100px"}
-                            color={colors.GRAY.mediumGray}
-                        />
-                    </AddImgBox>
+
+                    <AddImage />
+
                     <Spacer width={spacing.medium} height={spacing.medium} />
                     <Input
                         theme={"creamWhite"}
@@ -69,29 +107,88 @@ const AddProject = () => {
                         errors={errors}
                     />
                     <Spacer width={spacing.small} height={spacing.small} />
-                    <ParticipantWrapper>
+                    <AddWrapper>
                         {participants.map((participant, index) => (
-                            <ParticipantNameDiv key={index}>
+                            <ToggleNameDiv key={index}>
                                 {participant}
                                 <Button
                                     type={"button"}
-                                    onClick={() => removeParticipant(index)}
+                                    onClick={() =>
+                                        removeParticipant(
+                                            index,
+                                            participants,
+                                            setParticipants
+                                        )
+                                    }
                                 >
                                     X
                                 </Button>
-                            </ParticipantNameDiv>
+                            </ToggleNameDiv>
                         ))}
-                    </ParticipantWrapper>
+                    </AddWrapper>
                     <Spacer width={spacing.medium} height={spacing.medium} />
                     <Button
                         theme={"firstTheme"}
                         size={"xsmall"}
-                        onClick={addParticipant}
+                        onClick={() =>
+                            addParticipant(
+                                participantName,
+                                participants,
+                                setParticipants,
+                                "participantName"
+                            )
+                        }
                         type="button"
                     >
                         추가
                     </Button>
                     <Spacer width={spacing.medium} height={spacing.medium} />
+
+                    <Input
+                        theme={"creamWhite"}
+                        size={"small"}
+                        title="기술 스택"
+                        type="text"
+                        register={register}
+                        registerKey="skillName"
+                        errors={errors}
+                    />
+                    <Spacer width={spacing.medium} height={spacing.medium} />
+                    <AddWrapper>
+                        {skills.map((participant, index) => (
+                            <ToggleNameDiv key={index}>
+                                {participant}
+                                <Button
+                                    type={"button"}
+                                    onClick={() =>
+                                        removeParticipant(
+                                            index,
+                                            skills,
+                                            setSkills
+                                        )
+                                    }
+                                >
+                                    X
+                                </Button>
+                            </ToggleNameDiv>
+                        ))}
+                    </AddWrapper>
+                    <Spacer width={spacing.medium} height={spacing.medium} />
+                    <Button
+                        theme={"firstTheme"}
+                        size={"xsmall"}
+                        onClick={() =>
+                            addParticipant(
+                                skillName,
+                                skills,
+                                setSkills,
+                                "skillName"
+                            )
+                        }
+                        type="button"
+                    >
+                        추가
+                    </Button>
                 </AppProjectBox>
             </Wrapper>
         </Box>
@@ -106,22 +203,6 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const P = styled.p`
-    padding: 10px 0;
-`;
-
-const AddImgBox = styled.div`
-    width: 200px;
-    height: 200px;
-    border: 1px solid ${colors.GRAY.mediumLightGray};
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    background-color: ${colors.WHITE.cream};
-`;
-
 const AppProjectBox = styled.form`
     display: flex;
     justify-content: center;
@@ -129,19 +210,20 @@ const AppProjectBox = styled.form`
     flex-direction: column;
 `;
 
-const ParticipantWrapper = styled.div`
+const AddWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: row;
 `;
 
-const ParticipantNameDiv = styled.div`
+const ToggleNameDiv = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
 
-    border: 1px solid ${colors.GRAY.mediumLightGray};
+    border: 1px solid ${colors.WHITE.offWhite};
+    background-color: ${colors.GRAY.mediumGray};
     border-radius: 8px;
     padding: 4px;
 `;
