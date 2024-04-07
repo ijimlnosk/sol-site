@@ -60,6 +60,19 @@ export const addProjectMembers = async (projectId, members) => {
     }
 };
 
+// 멤버 삭제
+export const deleteProjectMembers = async (projectId, memberId) => {
+    try {
+        const response = await axiosInstance.delete(
+            `/project/${projectId}/members/${memberId}`
+        );
+        return response.data;
+    } catch (error) {
+        console.error("멤버 삭제 오류: ", error);
+        throw error;
+    }
+};
+
 // 프로젝트 기술 스택 데이터 가져오기
 export const getProjectSkills = async (projectId) => {
     try {
@@ -83,6 +96,19 @@ export const addProjectSkills = async (projectId, skills) => {
         return response.data;
     } catch (error) {
         console.error("프로젝트 기술 스택 데이터 추가 오류: ", error);
+        throw error;
+    }
+};
+
+// 기술 스택 삭제
+export const deleteProjectSkills = async (projectId, skillId) => {
+    try {
+        const response = await axiosInstance.delete(
+            `/project/${projectId}/members/${skillId}`
+        );
+        return response.data;
+    } catch (error) {
+        console.error("기술 스택 삭제 오류: ", error);
         throw error;
     }
 };

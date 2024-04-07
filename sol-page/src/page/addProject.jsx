@@ -46,23 +46,19 @@ const AddProject = () => {
                 projectData.append("imgSrc", image);
             }
 
-            console.log(projectData);
-
             // 참여자와 기술 스택은 별도의 API 호출로 처리될 수 있으므로 여기서는 무시
             const createdProject = await createProject(projectData);
             console.log("Created project: ", createdProject);
 
             // 프로젝트 생성 성공 후 ID를 사용하여 참여자와 기술 스택 추가
             const projectId = createdProject.id;
-            console.log(projectId, "projectId");
-            if (projectId) {
+
+            if (createdProject && createProject.id) {
+                console.log("if문 실행됨");
                 await Promise.all([
                     addProjectMembers(projectId, participants),
                     addProjectSkills(projectId, skills),
                 ]);
-                console.log(participants, "participantName");
-                console.log(skills, "skillName");
-                console.log("Members and skills added to tje project");
             }
         } catch (error) {
             console.error("프로젝트 생성 실패: ", error);
@@ -72,11 +68,17 @@ const AddProject = () => {
     console.log(participants, "participantName");
     console.log(skills, "skillName");
 
-    const addParticipant = (name, state, setState, fieldName) => {
+    const addParticipant = (name, state, setState, fieldName,projectId,addProject) => {
         if (name) {
-            setState([...state, name]);
+            const updatedParticipants = [...state, name]
+            setState(updatedParticipants);
             setValue(fieldName, "");
         }
+
+        try {
+            addProject(projectId, )
+        }
+
     };
 
     const removeParticipant = (RemoveIndex, state, setState) => {
