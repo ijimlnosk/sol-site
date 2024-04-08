@@ -11,8 +11,14 @@ const AddImage = () => {
     const handleImageChange = (e) => {
         if (e.target.files && e.target.files[0]) {
             const newImage = e.target.files[0];
-            const newImageUrl = URL.createObjectURL(newImage);
-            dispatch(setImage(newImageUrl));
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                const base64String = e.target.result;
+                dispatch(setImage(base64String));
+            };
+
+            reader.readAsDataURL(newImage);
         }
     };
 
@@ -27,14 +33,14 @@ const AddImage = () => {
             <P>상품 포스터 추가하기</P>
             {!image && (
                 <AddImgBox>
-                    <label htmlFor="image-input">
+                    <label htmlFor="imgSrc">
                         <BsPlusLg
                             size={"100px"}
                             color={colors.GRAY.mediumGray}
                         />
                     </label>
                     <input
-                        id="image-input"
+                        id="imgSrc"
                         type="file"
                         onChange={handleImageChange}
                         style={{ display: "none" }}

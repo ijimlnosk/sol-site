@@ -2,7 +2,7 @@ import axios from "axios";
 import { getSessionToken } from "../auth/storage-manager";
 
 export const axiosInstance = axios.create({
-    baseURL: "https://server.soljk.com",
+    baseURL: import.meta.evn.REACT_APP_PEA_BASE_URL,
     headers: {
         "Content-Type": "application/json",
     },
