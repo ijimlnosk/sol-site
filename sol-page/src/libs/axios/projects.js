@@ -1,4 +1,4 @@
-import { axiosInstance } from "./axios-instance";
+import { axiosInstance, imgAxiosInstance } from "./axios-instance";
 
 // 프로젝트 생성
 export const createProject = async (projectData) => {
@@ -109,6 +109,20 @@ export const deleteProjectSkills = async (projectId, skillId) => {
         return response.data;
     } catch (error) {
         console.error("기술 스택 삭제 오류: ", error);
+        throw error;
+    }
+};
+
+// 이미지 업로드
+export const imgUpload = async (file) => {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+        const response = imgAxiosInstance.post("/upload", formData);
+        return response.data;
+    } catch (error) {
+        console.error("이미지 업로드 중 오류가 발생했습니다.", error);
         throw error;
     }
 };

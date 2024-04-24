@@ -1,4 +1,4 @@
-import { createStore } from "redux";
+import { configureStore } from "@reduxjs/toolkit";
 
 const initState = {
     image: null,
@@ -15,6 +15,8 @@ const reducer = (state = initState, action) => {
     }
 };
 
-const store = createStore(reducer);
+const store = configureStore({
+    reducer: reducer,
+});
 
 export default store;

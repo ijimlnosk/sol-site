@@ -9,6 +9,18 @@ export const axiosInstance = axios.create({
     withCredentials: true,
 });
 
+const token = getSessionToken();
+
+// 이미지 업로드 인스턴스
+export const imgAxiosInstance = axios.create({
+    baseURL: import.meta.env.VITE_REACT_APP_PEA_BASE_URL,
+    headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+    },
+    withCredentials: true,
+});
+
 // 모든 요청을 시작하기 전에 실행됨
 axiosInstance.interceptors.request.use(
     (config) => {

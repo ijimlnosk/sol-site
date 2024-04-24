@@ -1,11 +1,13 @@
 import styled from "styled-components";
 import Box from "../components/commons/box";
 import { colors } from "../constants/design-token/color";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { BsArrowDownShort } from "react-icons/bs";
 import PageCard from "../components/commons/pageCard";
 import { getProjectAll, getProjectMembers } from "../libs/axios/projects";
 import { useEffect, useState } from "react";
+import Button from "../components/commons/button";
+import Spacer from "../components/commons/spacer";
 
 const MainPage = () => {
     const [data, setData] = useState();
@@ -35,21 +37,47 @@ const MainPage = () => {
         navigate(url);
     };
 
+    const location = useLocation();
+
+    const isAddProjectPage = location.pathname === "/addProject";
+
+    const onAddProjectNavi = () => {
+        if (!isAddProjectPage) {
+            navigate("/addProject");
+        }
+    };
+
     return (
         <>
             <Box>
                 <Container>
+                    <AddProject>
+                        <Button
+                            size={"small"}
+                            theme={"secondTheme"}
+                            onClick={() => onAddProjectNavi()}
+                            disabled={isAddProjectPage}
+                        >
+                            추가하기
+                        </Button>
+                    </AddProject>
                     {data?.map((item) => (
-                        <PageCard
-                            key={item.id}
-                            title={item.title}
-                            imgSrc={item.imgSrc}
-                            members={item.members?.map((member) => member.name)}
-                            period={item.period}
-                            content={item.content}
-                            url={item.url}
-                        />
+                        <>
+                            <PageCard
+                                key={item.id}
+                                title={item.title}
+                                imgSrc={item.imgSrc}
+                                members={item.members?.map(
+                                    (member) => member.name
+                                )}
+                                period={item.period}
+                                content={item.content}
+                                url={item.url}
+                            />
+                            <Spacer height={"20px"} />
+                        </>
                     ))}
+
                     <BannerBox>
                         <Wrapper onClick={() => onNavi("/mobi")}>
                             MOBI로 이동
@@ -104,4 +132,11 @@ const IconWrapper = styled.div`
         transform: translateY(10px);
         transition: 0.5s ease-in-out;
     }
+`;
+
+const AddProject = styled.div`
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    padding-right: 20px;
 `;

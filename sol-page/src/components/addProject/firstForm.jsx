@@ -4,10 +4,13 @@ import Spacer from "../commons/spacer";
 import spacing from "../../constants/design-token/spacing";
 import Input from "../commons/input";
 import styled from "styled-components";
-import AddImage from "./addImage";
-import { useSelector } from "react-redux";
+
+import { useDispatch, useSelector } from "react-redux";
 import Button from "../commons/button";
-import { createProject } from "../../libs/axios/projects";
+import { createProject, imgUpload } from "../../libs/axios/projects";
+import { colors } from "../../constants/design-token/color";
+import { removeImage, setImage } from "../../libs/redux/action/action";
+import { BsPlusLg, BsX } from "react-icons/bs";
 
 const FristForm = () => {
     const {
@@ -18,20 +21,43 @@ const FristForm = () => {
 
     const image = useSelector((state) => state.image);
 
+    const dispatch = useDispatch();
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (loadEvent) => {
+                const src = loadEvent.target.result;
+                dispatch(setImage(src));
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleRemoveImage = () => {
+        dispatch(removeImage());
+    };
+
     console.log(image, "image");
 
     const submitProject = async (data) => {
         try {
-            const projectData = {
-                ...data,
-                imgSrc: image,
-            };
+            const formData = new FormData();
+            formData.append("title", data.title);
+            formData.append("period", data.period);
+            formData.append("content", data.content);
 
-            console.log(projectData, "projectData");
+            if (typeof image === "string" && image.startsWith("data:image")) {
+                const response = await fetch(image);
+                const blob = await response.blob();
+                formData.append("image", blob, "upload.webp");
+            }
 
-            const responseData = await createProject(projectData);
-
+            const responseImg = await imgUpload(formData);
+            const responseData = await createProject(formData);
             console.log(responseData);
+            console.log(responseImg);
         } catch (error) {
             console.error(error);
         }
@@ -52,7 +78,36 @@ const FristForm = () => {
                 />
                 <Spacer width={spacing.medium} height={spacing.medium} />
 
-                <AddImage />
+                <div>
+                    <P>상품 포스터 추가하기</P>
+                    {!image && (
+                        <AddImgBox>
+                            <label htmlFor="imgSrc">
+                                <BsPlusLg
+                                    size={"100px"}
+                                    color={colors.GRAY.mediumGray}
+                                />
+                            </label>
+                            <input
+                                id="imgSrc"
+                                type="file"
+                                onChange={handleImageChange}
+                                style={{ display: "none" }}
+                            />
+                        </AddImgBox>
+                    )}
+                    {image && (
+                        <ImageContainer>
+                            <Img src={image} alt="Uploaded" />
+                            <RemoveBtn onClick={handleRemoveImage}>
+                                <BsX
+                                    size={"30px"}
+                                    color={colors.SYSTEM.error}
+                                />
+                            </RemoveBtn>
+                        </ImageContainer>
+                    )}
+                </div>
 
                 <Spacer width={spacing.medium} height={spacing.medium} />
 
@@ -92,4 +147,39 @@ const AppProjectBox = styled.form`
     justify-content: center;
     align-items: center;
     flex-direction: column;
+`;
+
+const P = styled.p`
+    padding: 10px 0;
+`;
+
+const AddImgBox = styled.div`
+    width: 200px;
+    height: 200px;
+    border: 1px solid ${colors.GRAY.mediumLightGray};
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: ${colors.WHITE.cream};
+`;
+
+const Img = styled.img`
+    width: 200px;
+    height: 200px;
+    padding-top: 10px;
+`;
+
+const ImageContainer = styled.div`
+    position: relative;
+`;
+
+const RemoveBtn = styled.button`
+    position: absolute;
+    top: 10px;
+    right: -4px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
 `;

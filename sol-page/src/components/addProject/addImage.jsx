@@ -3,24 +3,12 @@ import { BsX } from "react-icons/bs";
 import { colors } from "../../constants/design-token/color";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { removeImage, setImage } from "../../libs/redux/action/action";
+import { removeImage } from "../../libs/redux/action/action";
 
 const AddImage = () => {
     const dispatch = useDispatch();
 
-    const handleImageChange = (e) => {
-        if (e.target.files && e.target.files[0]) {
-            const newImage = e.target.files[0];
-            const reader = new FileReader();
-
-            reader.onload = (e) => {
-                const base64String = e.target.result;
-                dispatch(setImage(base64String));
-            };
-
-            reader.readAsDataURL(newImage);
-        }
-    };
+    const handleImageChange = () => {};
 
     const handleRemoveImage = () => {
         dispatch(removeImage());

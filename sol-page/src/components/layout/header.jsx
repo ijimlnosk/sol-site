@@ -1,19 +1,9 @@
 import styled from "styled-components";
 import { colors } from "../../constants/design-token/color";
-import Button from "../commons/button";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
     const navigate = useNavigate();
-    const location = useLocation();
-
-    const isAddProjectPage = location.pathname === "/addProject";
-
-    const onAddProjectNavi = () => {
-        if (!isAddProjectPage) {
-            navigate("/addProject");
-        }
-    };
 
     const onNavi = () => {
         navigate("");
@@ -31,16 +21,6 @@ const Header = () => {
                 </a>
             </LogoBox>
             <Title onClick={() => onNavi()}>Jinsol&rsquo;s Page</Title>
-            <AddProject>
-                <Button
-                    size={"small"}
-                    theme={"secondTheme"}
-                    onClick={() => onAddProjectNavi()}
-                    disabled={isAddProjectPage}
-                >
-                    추가하기
-                </Button>
-            </AddProject>
         </Wrapper>
     );
 };
@@ -76,11 +56,4 @@ const LogoImg = styled.img`
 const Title = styled.h1`
     text-align: center;
     cursor: pointer;
-`;
-
-const AddProject = styled.div`
-    display: flex;
-    justify-content: end;
-    align-items: center;
-    padding-right: 20px;
 `;
